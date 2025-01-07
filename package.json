@@ -1,5 +1,4 @@
 {
-  "name": "gregsithole-react-portfolio",
   "version": "0.1.0",
   "homepage": "https://marerem.github.io",
   "private": true,
@@ -21,6 +20,8 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build"
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -46,7 +47,6 @@
   },
   "devDependencies": {
     "gh-pages": "^6.3.0"
-  },
-  "predeploy": "yarn run build",
-  "deploy": "gh-pages -d build"
+  }
+
 }
