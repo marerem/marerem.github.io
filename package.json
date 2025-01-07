@@ -1,6 +1,6 @@
-{
+{  "name": "react_portfolio",
   "version": "0.1.0",
-  "homepage": "https://github.com/marerem/marerem.github.io",
+  "homepage": "https://marerem.github.io",
   "private": true,
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
