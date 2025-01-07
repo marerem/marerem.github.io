@@ -25,17 +25,14 @@ const Portfolio = () => {
 				<span className={activeFilter === 0 ? 'portfolio__item portfolio__item-active' : 'portfolio__item'} onClick={() => { setItems(Menu); setActiveFilter(0) }}>
 					All
 				</span>
-				<span className={activeFilter === 1 ? 'portfolio__item portfolio__item-active' : 'portfolio__item'} onClick={() => { filterItems("Frontend"); setActiveFilter(1) }}>
-					Frontend
+				<span className={activeFilter === 1 ? 'portfolio__item portfolio__item-active' : 'portfolio__item'} onClick={() => { filterItems("Deep Learning"); setActiveFilter(1) }}>
+					Deep Learning
 				</span>
-				<span className={activeFilter === 2 ? 'portfolio__item portfolio__item-active' : 'portfolio__item'} onClick={() => { filterItems("Backend"); setActiveFilter(2) }}>
-					Backend
+				<span className={activeFilter === 2 ? 'portfolio__item portfolio__item-active' : 'portfolio__item'} onClick={() => { filterItems("Software"); setActiveFilter(2) }}>
+					Software
 				</span>
-				<span className={activeFilter === 3 ? 'portfolio__item portfolio__item-active' : 'portfolio__item'} onClick={() => { filterItems("Angular"); setActiveFilter(3) }}>
-					Angular
-				</span>
-				<span className={activeFilter === 4 ? 'portfolio__item portfolio__item-active' : 'portfolio__item'} onClick={() => { filterItems("React"); setActiveFilter(4) }}>
-					React
+				<span className={activeFilter === 3 ? 'portfolio__item portfolio__item-active' : 'portfolio__item'} onClick={() => { filterItems("Computer Vision"); setActiveFilter(3) }}>
+					Computer Vision
 				</span>
 			</div>
 
@@ -68,6 +65,11 @@ const Portfolio = () => {
 						</motion.div>
 					);
 				})}
+			</div>
+
+
+			<div style={{ textAlign: 'center', marginTop: '4rem' }}>
+				<a href="mailto:mariia.erem@gmail.com" className="btn">Contact Me</a>
 			</div>
 		</section>
 	);

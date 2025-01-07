@@ -21,12 +21,12 @@
 }
 
 .services__card:nth-child(2) {
-  background-color: rgb(249, 215, 76);
+  background-color: rgb(255, 255, 255);
   box-shadow: 0 5px 20px 0 rgb(249, 215, 76 / 50%);
 }
 
 .services__card:nth-child(3) {
-  background-color: rgb(249, 123, 139);
+  background-color: rgb(7, 6, 6);
   box-shadow: 0 5px 20px 0 rgb(249, 123, 139 / 50%);
 }
 
@@ -77,4 +77,18 @@
   .services__container {
     grid-template-columns: 1fr;
   }
+}
+
+.services__content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.services__info {
+    flex: 1;
+}
+
+.services__img {
+    margin-bottom: 0;
 }

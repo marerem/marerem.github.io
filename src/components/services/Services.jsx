@@ -1,46 +1,49 @@
 import React from 'react';
 import './Services.css';
-import Image1 from '../../assets/service-1.svg'
-import Image2 from '../../assets/service-2.svg'
-import Image3 from '../../assets/service-3.svg'
+import Image1 from '../../assets/pngfind.com-msu-logo-png-6298911.png'
+import Image2 from '../../assets/epfl-circubat-project-member.png'
+import Image3 from '../../assets/pngegg.png'
 
 const data = [
     {
         id: 1,
         image: Image1,
-        title: "Responsive design",
+        title: "Bachelor Degree",
         description:
-            "Ensuring that the website/mobile app is responsive across all platforms",
+            "Bachelor of Biotechnology and Genetics Engineering",
     },
     {
         id: 2,
         image: Image2,
-        title: "Web Development",
+        title: "Master Degree",
         description:
-            "Ensuring that that a website meets the correct standards, and also ensuring it's well maintained",
+            "Master of Computer and Life Science",
     },
     {
         id: 3,
         image: Image3,
-        title: "Mobile Development",
+        title: "Master Thesis",
         description:
-            "Ensuring that a mobile app meets the correct standards, and also ensuring it's well maintained",
+            "Master Thesis in Computer Vision at Edelam Lab",
     },
 ];
 
 const Services = () => {
     return (
         <section className="services container section" id="services">
-            <h2 className="section__title">Services</h2>
+            <h2 className="section__title">Education</h2>
 
             <div className="services__container grid">
                 {data.map(({ id, image, title, description }) => {
                     return (
                         <div className="services__card" key={id}>
-                            <img src={image} alt='' className='services__img' width="80" />
-
-                            <h3 className="services__title">{title}</h3>
-                            <p className="services__description">{description}</p>
+                            <div className="services__content">
+                                <img src={image} alt='' className='services__img' width="80" />
+                                <div className="services__info">
+                                    <h3 className="services__title">{title}</h3>
+                                    <p className="services__description">{description}</p>
+                                </div>
+                            </div>
                         </div>
                     )
                 })}

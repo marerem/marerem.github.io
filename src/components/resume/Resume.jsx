@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./Resume.css";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import Button from "./Button";
+import { RiExternalLinkFill } from "react-icons/ri";
 
 import WorkExperience from "./WorkExperience";
 
@@ -36,7 +37,10 @@ const Resume = () => {
                         return (
                             <TabPanel className="tab__panel" key={`panel-${id}`}>
                                 <h2 className="tab__panel-title">
-                                    {title} @ {company}
+                                    {title} @ <a href={experience.url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--first-color)' }}>
+                                        {company}
+                                        <RiExternalLinkFill style={{ marginLeft: '4px' }} />
+                                    </a>
                                 </h2>
                                 <p className="tab__panel-subtitle">{yearsActive}</p>
                                 <ul className="tab__panel-list">
