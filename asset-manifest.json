@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/static/css/main.08e02073.css",
-    "main.js": "/static/js/main.17ef0750.js",
+    "main.js": "/static/js/main.88a0e661.js",
     "static/media/Screenshot 2025-01-05 at 22.15.36.png": "/static/media/Screenshot 2025-01-05 at 22.15.36.9396da1daf93dde59e94.png",
     "static/media/IMG_7525.HEIC": "/static/media/IMG_7525.4aee022e5de0afec67a4.HEIC",
     "static/media/Screenshot 2025-01-05 at 22.18.10.png": "/static/media/Screenshot 2025-01-05 at 22.18.10.c188bd71a2addf377c60.png",
     "static/media/Screenshot 2025-01-05 at 22.20.27.png": "/static/media/Screenshot 2025-01-05 at 22.20.27.48de6f7dff7f37486ef7.png",
     "static/media/Screenshot 2025-01-05 at 22.52.57.png": "/static/media/Screenshot 2025-01-05 at 22.52.57.1406c929b55373784c2b.png",
-    "static/media/resume.pdf": "/static/media/resume.a93cf609ad5b2366d2d0.pdf",
     "static/media/IMG_4358.JPG": "/static/media/IMG_4358.7d0e2513307a2cdf7e35.JPG",
     "static/media/Screenshot 2025-01-05 at 22.12.03.png": "/static/media/Screenshot 2025-01-05 at 22.12.03.06f7fb5c7c3e1de65ae7.png",
+    "static/media/resume.pdf": "/static/media/resume.6fb8f4a5c8f5cb538cc9.pdf",
     "static/media/pngfind.com-msu-logo-png-6298911.png": "/static/media/pngfind.com-msu-logo-png-6298911.1e4e8552d826742c4cb0.png",
     "static/media/Screenshot 2025-01-05 at 22.50.36.png": "/static/media/Screenshot 2025-01-05 at 22.50.36.a5190d0d86f8fc8b3c45.png",
     "static/media/pngegg.png": "/static/media/pngegg.8c34da1c5478bd079625.png",
@@ -19,10 +19,10 @@
     "static/media/light-logo.svg": "/static/media/light-logo.533c20f31bf65c1c1d8c3a6d407f5304.svg",
     "index.html": "/index.html",
     "main.08e02073.css.map": "/static/css/main.08e02073.css.map",
-    "main.17ef0750.js.map": "/static/js/main.17ef0750.js.map"
+    "main.88a0e661.js.map": "/static/js/main.88a0e661.js.map"
   },
   "entrypoints": [
     "static/css/main.08e02073.css",
-    "static/js/main.17ef0750.js"
+    "static/js/main.88a0e661.js"
   ]
 }
