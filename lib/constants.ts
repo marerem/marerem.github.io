@@ -1,1 +1,3 @@
-export const WEBSITE_URL = 'https://nim-fawn.vercel.app'
+import { siteConfig } from '@/site.config'
+
+export const WEBSITE_URL = siteConfig.siteUrl

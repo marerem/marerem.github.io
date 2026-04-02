@@ -1,0 +1,131 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[top=0.6in,bottom=0.6in,left=0.65in,right=0.65in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{tabularx}
+
+\definecolor{accent}{HTML}{1a1a1a}
+\definecolor{subtle}{HTML}{333333}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=accent,
+  linkcolor=accent,
+  pdfauthor={Mariia Eremina},
+  pdftitle={Mariia Eremina - Resume},
+}
+
+\pagestyle{empty}
+
+\titleformat{\section}{\large\bfseries\color{accent}\uppercase}{}{0em}{}[\titlerule]
+\titlespacing*{\section}{0pt}{14pt}{6pt}
+
+\setlist[itemize]{leftmargin=1.4em,itemsep=2pt,parsep=0pt,topsep=3pt}
+
+\newcommand{\role}[4]{%
+  \noindent\textbf{#1}\hfill\textit{#2}\\
+  \textbf{\textit{#3}}\hfill\textcolor{subtle}{#4}\par\vspace{2pt}%
+}
+
+\begin{document}
+
+% ── HEADER ──────────────────────────────────────────────────
+\begin{center}
+  {\LARGE\bfseries Mariia Eremina}\\\vspace{4pt}
+  {\color{subtle}Basel, Switzerland\enspace·\enspace+41\,76\,229\,4344\enspace·\enspace%
+  \href{mailto:mariia.erem@gmail.com}{mariia.erem@gmail.com}}\\[2pt]
+  {\color{subtle}%
+  \href{https://mariia.ch}{mariia.ch}\enspace·\enspace%
+  \href{https://linkedin.com/in/mariia-eremina}{linkedin.com/in/mariia-eremina}\enspace·\enspace%
+  \href{https://github.com/marerem}{github.com/marerem}}
+\end{center}
+
+\vspace{-2pt}
+
+% ── SUMMARY ─────────────────────────────────────────────────
+\section{Summary}
+
+ML \& Infrastructure Engineer with 4+ years of experience designing production ML systems, observability platforms, and cloud-native infrastructure.
+Lead cross-functional teams, drive architecture decisions at scale, and own end-to-end delivery, from research prototypes to fully automated production deployments.
+
+% ── EXPERIENCE ──────────────────────────────────────────────
+\section{Professional Experience}
+
+\role{Senior Machine Learning \& Infrastructure Engineer}{May 2025 -- Present}{MDPI, Open-Access Scientific Journal Publisher}{Basel, Switzerland}
+\begin{itemize}
+  \item Spearheaded AI and data-analytics strategy across the organisation; selected technologies, defined architectural standards, and managed engineering teams spanning Switzerland and China.
+  \item Architected and deployed a next-generation observability stack (OpenTelemetry, ClickHouse, SigNoz), replacing Grafana--Prometheus and \textbf{reducing incident response time by 30\%} while lowering operational overhead.
+  \item Led end-to-end migration of all digital products to a modern infrastructure: transitioning orchestration from Apache Airflow to a \textbf{self-hosted Prefect orchestrator}, dependency management from Poetry to UV, and logging from Loguru to a structured Logly/React-based observability layer, while optimising ETL pipelines with Polars for \textbf{fully automated zero-downtime deployments}.
+  \item Designed and built the entire API server layer from scratch (FastAPI, PostgreSQL, S3), providing a unified backend for all internal and external services.
+  \item Established CI/CD best practices and infrastructure-as-code standards, accelerating release cycles and improving cross-team developer velocity.
+\end{itemize}
+
+\role{Software Engineer}{Sep 2024 -- Aug 2025}{MIT, Massachusetts Institute of Technology}{Boston, USA (Hybrid)}
+\begin{itemize}
+  \item Designed and delivered a clinician-facing full-stack platform integrating Harvard Medical School's AI research into hospital workflows (Python, Flask, React), enabling real-time diagnostic support for clinicians.
+  \item Onboarded and mentored new engineers, establishing documentation standards and accelerating ramp-up time for incoming team members.
+\end{itemize}
+
+\role{Co-Founder \& Lead Software / CV Engineer}{May 2024 -- Dec 2024}{CarGo Relay, AI-Powered Last-Mile Delivery (EPFL Startup)}{Lausanne, Switzerland}
+\begin{itemize}
+  \item Co-founded an EPFL-incubated startup; drove technical vision, system architecture, and product roadmap from ideation to working prototype.
+  \item Built a cross-platform mobile application (React Native, MongoDB, Firebase) and managed the agile delivery process end-to-end with Jira.
+\end{itemize}
+
+\role{Computer Vision Research Engineer}{Mar 2024 -- Sep 2024}{MIT \& Harvard Medical School}{Boston, USA}
+\begin{itemize}
+  \item Invented a spline-based co-registration algorithm for cardiovascular surgery hardware, achieving a \textbf{40$\times$ speed-up} and reducing manual work per patient from \textbf{3 hours to 5 seconds} (Python, PyTorch, OpenCV).
+  \item Integrated Stable Diffusion Inpainting, SAM, and CLIPSeg for video quality enhancement; engineered cross-platform compatibility (macOS, Windows, Linux) for seamless integration with medical hardware.
+\end{itemize}
+
+\role{Software \& Machine Learning Engineer, Team Lead}{Jun 2023 -- Mar 2024}{Maxon Group, Precision Motor Systems}{Lucerne, Switzerland}
+\begin{itemize}
+  \item Led a cross-functional team of 5 (2 SWE, 1 MLE, 2 external AI experts from CSEM) to design, develop, and deploy an industrial anomaly-detection pipeline (Autoencoder + Siamese network), achieving \textbf{90\%+ test coverage} with pytest and unittest integrated into CI.
+  \item Delivered a production-grade customer-facing web application for motor quality inspection (FastAPI, PostgreSQL, Docker), integrated into the factory production line.
+\end{itemize}
+
+\role{Machine Learning Engineer}{Dec 2022 -- May 2023}{AGORA Cancer Research Center}{Lausanne, Switzerland}
+\begin{itemize}
+  \item Developed a deep-learning framework (YOLOv5, DeepSORT) to detect and track cancer organoid stages, \textbf{reducing manual annotation time by 50\%} and supporting clinical research at CHUV.
+  \item Architected and maintained a 150\,TB imaging data pipeline, partnering with clinical researchers at CHUV to improve organoid detection precision.
+\end{itemize}
+
+% ── EDUCATION ───────────────────────────────────────────────
+\section{Education}
+
+\role{Master Thesis in Computer Science}{2024}{MIT, Massachusetts Institute of Technology}{Boston, USA}
+\vspace{-2pt}
+\begin{itemize}
+  \item ``Landmark-Based Co-Registration of Coronary CT and Intravascular Images''
+\end{itemize}
+
+\role{MSc Computer Science \& Life Science}{2021 -- 2024}{EPFL, Swiss Federal Institute of Technology}{Lausanne, Switzerland}
+\vspace{-2pt}
+\begin{itemize}
+  \item Organise annual hackathons sponsored by AWS, UBS, Logitech, SBB, Swisscom, Swissquote, and Huawei (ongoing since 2022).
+\end{itemize}
+
+\role{BSc Biotechnology}{2017 -- 2021}{Lomonosov Moscow State University}{Moscow, Russia}
+
+% ── SKILLS ──────────────────────────────────────────────────
+\section{Technical Skills}
+
+\begin{tabularx}{\textwidth}{@{}l X@{}}
+\textbf{Infrastructure \& DevOps} & Docker, AWS (S3), GCP, Azure, Linux, CI/CD (GitHub Actions, GitLab CI), Ansible, OpenTelemetry, ClickHouse, SigNoz, Prefect, Redis, Git \\[3pt]
+\textbf{ML \& Data} & PyTorch, TensorFlow, Keras, OpenCV, scikit-learn, Hydra, Polars, pandas, NumPy, Optuna, W\&B \\[3pt]
+\textbf{Languages} & Python, TypeScript, JavaScript, HTML, SQL, R, MATLAB, \LaTeX \\[3pt]
+\textbf{Web \& Backend} & React, React Native, Flask, FastAPI, PostgreSQL, MongoDB, Firebase \\
+\end{tabularx}
+
+% ── LANGUAGES ───────────────────────────────────────────────
+\section{Languages}
+
+English (fluent) · Russian (native) · German (A1--A2) · Spanish (A1)
+
+\end{document}

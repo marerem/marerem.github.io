@@ -1,40 +1,69 @@
-<img src="/public/cover.jpg" alt="Cover image representing Nim, a personal website template" width="100%" />
+# Nim — Personal Portfolio Template
 
-Nim is a free and open-source personal website template built with Next.js 15, React 19, Tailwind CSS v4, and Motion. Designed for developers, designers, and founders, it combines minimalism with delightful animated components powered by [Motion-Primitives](https://motion-primitives.com).
-
-Live demo: [https://nim-fawn.vercel.app](https://nim-fawn.vercel.app)
+A minimal, elegant personal portfolio website built with Next.js 15, React 19, Tailwind CSS 4, and Motion-Primitives.
 
 ## Features
 
-- Minimal one-page portfolio layout.
-- Blog support with MDX.
-- Responsive and accessible design.
-- Easy to use
-- [Motion-Primitives](https://motion-primitives.com) for animated components.
+- **Single config file** — all personal data in `site.config.ts`
+- **WebGL Orb background** — interactive animated background with mouse tracking
+- **Dark mode** — system-aware theme switching
+- **Glass-morphism navigation** — sticky nav with active section highlighting
+- **Animated counters** — spring-animated stats section
+- **Terminal chatbot** — keyword-based Q&A about your portfolio
+- **Downloadable CV** — one-click PDF download
+- **Responsive** — mobile-first design
+- **SEO optimised** — metadata, Open Graph, canonical URLs
 
 ## Getting Started
 
-For detailed setup instructions, refer to the [Installation Guide](./INSTALLATION.md).
+See [INSTALLATION.md](./INSTALLATION.md) for setup instructions.
 
 ```bash
-git clone https://github.com/ibelick/nim.git
-cd nim
 npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Customisation
 
-## Contributing
+Edit `site.config.ts` to personalise everything:
 
-Contributions are welcome! Feel free to open issues or submit pull requests to improve Nim.
+```typescript
+export const siteConfig = {
+  name: 'Your Name',
+  title: 'Your Title',
+  bio: 'Your bio...',
+  // ... all content lives here
+}
+```
 
-## Deployment
+Replace `public/avatar.jpg` with your photo and `public/cv.pdf` with your resume.
 
-You can deploy your site to any hosting platform that supports Next.js. For the easiest deployment experience, consider using Vercel:
+## Project Structure
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fibelick%2Fnim&env=NEXT_PUBLIC_SITE_URL&project-name=nim&repository-name=nim&redirect-url=https%3A%2F%2Ftwitter.com%2Fibelick&demo-title=Nim&demo-description=Nim%20is%20a%20free%20and%20open-source%20minimal%20personal%20website%20template%20built%20with%20Next.js%2015%2C%20React%2019%2C%20and%20Motion-Primitives.&demo-url=https%3A%2F%2Fnim.vercel.app&demo-image=https%3A%2F%2Fraw.githubusercontent.com%2Fibelick%2Fnim%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Freadme.png&teamSlug=ibelick)
+```
+├── app/
+│   ├── layout.tsx          # Root layout with orb + terminal
+│   ├── header.tsx          # Name, title, sticky nav, theme switch
+│   ├── footer.tsx          # Footer with credits
+│   ├── page.tsx            # Main content sections
+│   └── data.ts             # Data bridge from site.config
+├── components/ui/
+│   ├── orb.tsx             # WebGL orb shader
+│   ├── orb-background.tsx  # Theme-aware orb wrapper
+│   ├── terminal-chat.tsx   # Terminal-style chatbot
+│   └── ...                 # Motion-Primitives components
+├── site.config.ts          # ← All your content here
+├── public/
+│   ├── avatar.jpg          # Profile photo
+│   └── cv.pdf              # Downloadable resume
+└── INSTALLATION.md
+```
 
-## About
+## Inspiration
 
-Nim is designed to make personal branding effortless and beautiful. If you enjoy it, consider sharing it and exploring [Motion-Primitives Pro](https://pro.motion-primitives.com/).
+- [ibelick/nim](https://github.com/ibelick/nim) — base template
+- [reactbits.dev/backgrounds/orb](https://www.reactbits.dev/backgrounds/orb?hue=74) — orb background
+
+## License
+
+MIT

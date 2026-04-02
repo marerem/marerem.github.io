@@ -4,6 +4,9 @@ import './globals.css'
 import { Header } from './header'
 import { Footer } from './footer'
 import { ThemeProvider } from 'next-themes'
+import { TerminalChat } from '@/components/ui/terminal-chat'
+import { OrbBackground } from '@/components/ui/orb-background'
+import { siteConfig } from '@/site.config'
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -12,16 +15,14 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://nim-fawn.vercel.app/'),
-  alternates: {
-    canonical: '/'
-  },
+  metadataBase: new URL(siteConfig.siteUrl),
+  alternates: { canonical: '/' },
   title: {
-    default: 'Nim - Personal website template',
-    template: '%s | Nim'
+    default: `${siteConfig.name} — ${siteConfig.title}`,
+    template: `%s | ${siteConfig.name}`,
   },
-  description:  'Nim is a free and open-source personal website template built with Next.js 15, React 19 and Motion-Primitives.',
-};
+  description: siteConfig.metaDescription,
+}
 
 const geist = Geist({
   variable: '--font-geist',
@@ -39,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={siteConfig.locale} suppressHydrationWarning>
       <body
         className={`${geist.variable} ${geistMono.variable} bg-white tracking-tight antialiased dark:bg-zinc-950`}
       >
@@ -49,13 +50,15 @@ export default function RootLayout({
           storageKey="theme"
           defaultTheme="system"
         >
-          <div className="flex min-h-screen w-full flex-col font-[family-name:var(--font-inter-tight)]">
+          <OrbBackground />
+          <div className="relative flex min-h-screen w-full flex-col font-[family-name:var(--font-inter-tight)]">
             <div className="relative mx-auto w-full max-w-screen-sm flex-1 px-4 pt-20">
               <Header />
               {children}
               <Footer />
             </div>
           </div>
+          <TerminalChat />
         </ThemeProvider>
       </body>
     </html>

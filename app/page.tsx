@@ -1,5 +1,5 @@
 'use client'
-import { motion } from 'motion/react'
+import { motion, useInView, useSpring, useTransform } from 'motion/react'
 import { XIcon } from 'lucide-react'
 import { Spotlight } from '@/components/ui/spotlight'
 import { Magnetic } from '@/components/ui/magnetic'
@@ -16,9 +16,13 @@ import {
   PROJECTS,
   WORK_EXPERIENCE,
   BLOG_POSTS,
-  EMAIL,
+  EMAIL_USER,
+  EMAIL_DOMAIN,
+  EMAIL_DISPLAY,
   SOCIAL_LINKS,
 } from './data'
+import { siteConfig } from '@/site.config'
+import { useEffect, useRef } from 'react'
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -44,6 +48,7 @@ type ProjectVideoProps = {
 }
 
 function ProjectVideo({ src }: ProjectVideoProps) {
+  if (!src) return null
   return (
     <MorphingDialog
       transition={{
@@ -86,6 +91,28 @@ function ProjectVideo({ src }: ProjectVideoProps) {
         </MorphingDialogClose>
       </MorphingDialogContainer>
     </MorphingDialog>
+  )
+}
+
+function AnimatedCounter({ value, label }: { value: number; label: string }) {
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true })
+  const spring = useSpring(0, { bounce: 0, duration: 2000 })
+  const display = useTransform(spring, (v) => Math.round(v))
+
+  useEffect(() => {
+    if (isInView) spring.set(value)
+  }, [isInView, spring, value])
+
+  return (
+    <div ref={ref} className="text-center">
+      <motion.span className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
+        {display}
+      </motion.span>
+      <p className="mt-1 font-[family-name:var(--font-geist-mono)] text-[10px] text-zinc-500">
+        {label}
+      </p>
+    </div>
   )
 }
 
@@ -132,47 +159,82 @@ export default function Personal() {
       animate="visible"
     >
       <motion.section
+        id="bio"
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
       >
-        <div className="flex-1">
-          <p className="text-zinc-600 dark:text-zinc-400">
-            Focused on creating intuitive and performant web experiences.
-            Bridging the gap between design and development.
-          </p>
-        </div>
+        <p className="text-zinc-600 dark:text-zinc-300">{siteConfig.bio}</p>
+        <p className="mt-3 font-[family-name:var(--font-geist-mono)] text-xs text-zinc-500">
+          {siteConfig.tagline}
+        </p>
       </motion.section>
 
+      {siteConfig.counters.length > 0 && (
+        <motion.section
+          variants={VARIANTS_SECTION}
+          transition={TRANSITION_SECTION}
+        >
+          <div className="grid grid-cols-4 gap-4 rounded-2xl border border-zinc-200/60 bg-white/50 p-6 backdrop-blur-sm dark:border-zinc-800/60 dark:bg-zinc-900/30">
+            {siteConfig.counters.map((c) => (
+              <AnimatedCounter
+                key={c.label}
+                value={c.value}
+                label={c.label}
+              />
+            ))}
+          </div>
+        </motion.section>
+      )}
+
       <motion.section
+        id="projects"
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
       >
         <h3 className="mb-5 text-lg font-medium">Selected Projects</h3>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="flex flex-col space-y-2">
           {PROJECTS.map((project) => (
-            <div key={project.name} className="space-y-2">
-              <div className="relative rounded-2xl bg-zinc-50/40 p-1 ring-1 ring-zinc-200/50 ring-inset dark:bg-zinc-950/40 dark:ring-zinc-800/50">
-                <ProjectVideo src={project.video} />
+            <a
+              className="relative overflow-hidden rounded-2xl bg-zinc-300/30 p-[1px] dark:bg-zinc-600/30"
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              key={project.id}
+            >
+              <Spotlight
+                className="from-zinc-900 via-zinc-800 to-zinc-700 blur-2xl dark:from-zinc-100 dark:via-zinc-200 dark:to-zinc-50"
+                size={64}
+              />
+              <div className="relative h-full w-full rounded-[15px] bg-white p-4 dark:bg-zinc-950">
+                <div className="flex w-full flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h4 className="font-normal dark:text-zinc-100">
+                      {project.name}
+                    </h4>
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                      {project.description}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 gap-1.5">
+                    {(project.tags ?? []).map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full bg-zinc-100 px-2 py-0.5 font-[family-name:var(--font-geist-mono)] text-[10px] text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                {project.video && <ProjectVideo src={project.video} />}
               </div>
-              <div className="px-1">
-                <a
-                  className="font-base group relative inline-block font-[450] text-zinc-900 dark:text-zinc-50"
-                  href={project.link}
-                  target="_blank"
-                >
-                  {project.name}
-                  <span className="absolute bottom-0.5 left-0 block h-[1px] w-full max-w-0 bg-zinc-900 dark:bg-zinc-50 transition-all duration-200 group-hover:max-w-full"></span>
-                </a>
-                <p className="text-base text-zinc-600 dark:text-zinc-400">
-                  {project.description}
-                </p>
-              </div>
-            </div>
+            </a>
           ))}
         </div>
       </motion.section>
 
       <motion.section
+        id="experience"
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
       >
@@ -200,8 +262,8 @@ export default function Personal() {
                       {job.company}
                     </p>
                   </div>
-                  <p className="text-zinc-600 dark:text-zinc-400">
-                    {job.start} - {job.end}
+                  <p className="font-[family-name:var(--font-geist-mono)] text-xs text-zinc-500 dark:text-zinc-400">
+                    {job.start} — {job.end}
                   </p>
                 </div>
               </div>
@@ -210,7 +272,35 @@ export default function Personal() {
         </div>
       </motion.section>
 
+      {siteConfig.education.length > 0 && (
+        <motion.section
+          id="education"
+          variants={VARIANTS_SECTION}
+          transition={TRANSITION_SECTION}
+        >
+          <h3 className="mb-5 text-lg font-medium">Education</h3>
+          <div className="space-y-3 text-sm">
+            {siteConfig.education.map((edu) => (
+              <div key={edu.degree} className="flex justify-between">
+                <div>
+                  <p className="font-normal text-zinc-900 dark:text-zinc-100">
+                    {edu.degree}
+                  </p>
+                  <p className="text-zinc-500 dark:text-zinc-400">
+                    {edu.school}
+                  </p>
+                </div>
+                <p className="font-[family-name:var(--font-geist-mono)] text-xs text-zinc-500 dark:text-zinc-400">
+                  {edu.start} — {edu.end}
+                </p>
+              </div>
+            ))}
+          </div>
+        </motion.section>
+      )}
+
       <motion.section
+        id="blog"
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
       >
@@ -247,22 +337,67 @@ export default function Personal() {
       </motion.section>
 
       <motion.section
+        id="connect"
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
       >
         <h3 className="mb-5 text-lg font-medium">Connect</h3>
-        <p className="mb-5 text-zinc-600 dark:text-zinc-400">
-          Feel free to contact me at{' '}
-          <a className="underline dark:text-zinc-300" href={`mailto:${EMAIL}`}>
-            {EMAIL}
-          </a>
-        </p>
-        <div className="flex items-center justify-start space-x-3">
-          {SOCIAL_LINKS.map((link) => (
-            <MagneticSocialLink key={link.label} link={link.link}>
-              {link.label}
-            </MagneticSocialLink>
-          ))}
+        <div className="flex items-start gap-6">
+          <div className="h-28 w-28 shrink-0 overflow-hidden rounded-full ring-2 ring-zinc-100 dark:ring-zinc-800">
+            <img
+              src={siteConfig.avatarPath}
+              alt={siteConfig.name}
+              className="h-full w-full scale-[1.6] translate-y-[5%] object-cover object-[center_0%]"
+            />
+          </div>
+          <div>
+            <p className="mb-4 text-zinc-600 dark:text-zinc-400">
+              Feel free to contact me at{' '}
+              <a
+                className="font-[family-name:var(--font-geist-mono)] text-sm underline dark:text-zinc-300"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault()
+                  window.location.href = `mailto:${EMAIL_USER}@${EMAIL_DOMAIN}`
+                }}
+              >
+                {EMAIL_DISPLAY}
+              </a>
+            </p>
+            <div className="flex items-center justify-start space-x-3">
+              {SOCIAL_LINKS.map((link) => (
+                <MagneticSocialLink key={link.label} link={link.link}>
+                  {link.label}
+                </MagneticSocialLink>
+              ))}
+              {siteConfig.cvPath && (
+                <Magnetic springOptions={{ bounce: 0 }} intensity={0.3}>
+                  <a
+                    href={siteConfig.cvPath}
+                    download
+                    className="group relative inline-flex shrink-0 items-center gap-[1px] rounded-full bg-zinc-100 px-2.5 py-1 text-sm text-black transition-colors duration-200 hover:bg-zinc-950 hover:text-zinc-50 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700"
+                  >
+                    Download CV
+                    <svg
+                      width="15"
+                      height="15"
+                      viewBox="0 0 15 15"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-3 w-3"
+                    >
+                      <path
+                        d="M7.5 1C7.77614 1 8 1.22386 8 1.5V8.29289L10.1464 6.14645C10.3417 5.95118 10.6583 5.95118 10.8536 6.14645C11.0488 6.34171 11.0488 6.65829 10.8536 6.85355L7.85355 9.85355C7.65829 10.0488 7.34171 10.0488 7.14645 9.85355L4.14645 6.85355C3.95118 6.65829 3.95118 6.34171 4.14645 6.14645C4.34171 5.95118 4.65829 5.95118 4.85355 6.14645L7 8.29289V1.5C7 1.22386 7.22386 1 7.5 1ZM2.5 10C2.77614 10 3 10.2239 3 10.5V12H12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V12.5C13 12.7761 12.7761 13 12.5 13H2.5C2.22386 13 2 12.7761 2 12.5V10.5C2 10.2239 2.22386 10 2.5 10Z"
+                        fill="currentColor"
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </a>
+                </Magnetic>
+              )}
+            </div>
+          </div>
         </div>
       </motion.section>
     </motion.main>
