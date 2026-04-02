@@ -30,8 +30,8 @@ export const siteConfig = {
 
   navItems: [
     { label: 'Bio', href: '#bio', id: 'bio' },
-    { label: 'Projects', href: '#projects', id: 'projects' },
     { label: 'Experience', href: '#experience', id: 'experience' },
+    { label: 'Projects', href: '#projects', id: 'projects' },
     { label: 'Blog', href: '#blog', id: 'blog' },
     { label: 'Connect', href: '#connect', id: 'connect' },
   ] as const,

@@ -48,7 +48,7 @@ export default function RootLayout({
           enableSystem={true}
           attribute="class"
           storageKey="theme"
-          defaultTheme="system"
+          defaultTheme="dark"
         >
           <OrbBackground />
           <div className="relative flex min-h-screen w-full flex-col font-[family-name:var(--font-inter-tight)]">
