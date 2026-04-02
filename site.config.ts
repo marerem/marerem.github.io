@@ -12,9 +12,9 @@ export const siteConfig = {
 
   counters: [
     { value: 4, label: 'Years Exp.' },
+    { value: 6, label: 'Companies' },
+    { value: 36, label: 'Repos' },
     { value: 6, label: 'Products' },
-    { value: 10, label: 'Repos' },
-    { value: 3, label: 'Countries' },
   ],
 
   email: {
