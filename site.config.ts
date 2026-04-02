@@ -4,7 +4,7 @@ export const siteConfig = {
   siteUrl: 'https://mariia.ch',
   locale: 'en',
   bio: 'ML & Infrastructure Engineer with 4+ years of experience designing production ML systems, observability platforms, and scalable backend infrastructure. Lead cross-functional teams, drive architecture decisions at scale, and own end-to-end delivery, from research prototypes to fully automated production deployments.',
-  tagline: 'Currently: Leading AI & infrastructure at MDPI, Basel',
+  tagline: 'Currently: ML & Infrastructure Engineer at MDPI, Basel',
   metaDescription:
     'Mariia Eremina — ML & infrastructure engineer. Designing production ML systems, observability pipelines, and scalable backend platforms. Basel, Switzerland.',
   avatarPath: '/avatar.jpg',
