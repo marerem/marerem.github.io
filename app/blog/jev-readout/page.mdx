@@ -1,0 +1,48 @@
+import { BlogArticle } from '@/components/ui/blog-article'
+import { ReadoutPipeline } from '@/components/viz/readout-pipeline'
+import { CandidateMask } from '@/components/viz/candidate-mask'
+import { NoulCalibration } from '@/components/viz/noul-calibration'
+
+export const metadata = {
+  title: 'Jev-style decisions from an untuned LLM (draft)',
+  description: 'Reading a yes/no answer from two logits: one forward pass, a mask, a softmax.',
+  robots: { index: false },
+}
+
+<BlogArticle>
+
+# Jev-style decisions from an untuned LLM
+
+*Draft — the numbers in the diagrams are illustrative, not measured.*
+
+A decision model like Jev doesn't generate text. It answers a **typed question** — *noul* (yes/no), *score* (ordered levels) or *choice* (K options) — with a probability distribution over the allowed answers. You can get that from an off-the-shelf LLM without training: one forward pass, keep the logits of the allowed answer tokens, softmax over them.
+
+## The whole readout in five steps
+
+<ReadoutPipeline />
+
+## Only the candidate list changes
+
+The mask is **fixed by the question type**, not by what the model happens to rank highest. For noul it is always `" yes"` and `" no"` — even when `" Yes"` scores higher than `" no"`. Switch the type and turn the mask on:
+
+<CandidateMask />
+
+Before the mask, the candidates' raw probabilities don't sum to 1 — the rest of the mass sits on every other token. After it, we have a proper conditional distribution:
+
+$$
+P(a \mid \text{prompt},\ a \in \mathcal{A}) = \frac{e^{\ell_a / T}}{\sum_{a' \in \mathcal{A}} e^{\ell_{a'} / T}}
+$$
+
+## With two candidates, softmax is a sigmoid
+
+For noul, $\mathcal{A} = \{\text{yes}, \text{no}\}$ and the softmax collapses to a function of a single number, the logit gap $\Delta = \ell_{\text{yes}} - \ell_{\text{no}}$:
+
+$$
+P(\text{yes}) = \sigma\!\left(\frac{\Delta + b}{T}\right)
+$$
+
+Calibration fits $T$ and the yes-bias $b$ on the validation split. Drag the point along the curve, then move the sliders — $T$ stretches the curve (less confident), $b$ shifts it:
+
+<NoulCalibration />
+
+</BlogArticle>

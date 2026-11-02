@@ -2,14 +2,6 @@
 @plugin '@tailwindcss/typography';
 @custom-variant dark (&:is(.dark *));
 
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
 @layer base {
   *,
   ::after,
@@ -18,15 +10,252 @@
   ::file-selector-button {
     border-color: var(--color-gray-200, currentColor);
   }
+
+  :root {
+    --bg: #09090b;
+    --card: rgba(255, 255, 255, 0.035);
+    --card2: rgba(255, 255, 255, 0.06);
+    --line: rgba(255, 255, 255, 0.08);
+    --line2: rgba(255, 255, 255, 0.15);
+    --text: #f6f6f3;
+    --muted: #9b9ba3;
+    --soft: #d5d5d1;
+    --lime: #c6ff4a;
+    --cyan: #71e6ff;
+    --violet: #b393ff;
+    --orange: #ffb35c;
+    --shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    --sh-class: #7aa2f7;
+    --sh-sign: #89ddff;
+    --sh-string: #9ece6a;
+    --sh-keyword: #bb9af7;
+    --sh-comment: #565f89;
+    --sh-jsxliterals: #7aa2f7;
+    --sh-property: #73daca;
+    --sh-entity: #e0af68;
+  }
+
+  .light {
+    --bg: #fafafa;
+    --card: rgba(0, 0, 0, 0.025);
+    --card2: rgba(0, 0, 0, 0.05);
+    --line: rgba(0, 0, 0, 0.07);
+    --line2: rgba(0, 0, 0, 0.12);
+    --text: #1a1a1a;
+    --muted: #6b6b73;
+    --soft: #3a3a3f;
+    --lime: #4a9e00;
+    --cyan: #0891b2;
+    --violet: #7c3aed;
+    --orange: #d97706;
+    --shadow: 0 20px 60px rgba(0, 0, 0, 0.06);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
 }
 
-:root {
-  --sh-class: #7aa2f7;
-  --sh-sign: #89ddff;
-  --sh-string: #9ece6a;
-  --sh-keyword: #bb9af7;
-  --sh-comment: #565f89;
-  --sh-jsxliterals: #7aa2f7;
-  --sh-property: #73daca;
-  --sh-entity: #e0af68;
+@layer components {
+  /* ---- Case Study & Blog Pages ---- */
+  .case-study-content {
+    color: var(--text);
+  }
+
+  .case-study-content h1 {
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+    margin: 0 0 24px;
+  }
+
+  .case-study-content h2 {
+    font-size: clamp(20px, 3vw, 26px);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    font-weight: 650;
+    margin: 48px 0 16px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+
+  .case-study-content h3 {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 28px 0 10px;
+  }
+
+  .case-study-content p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.75;
+    margin: 0 0 18px;
+  }
+
+  .case-study-content strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .case-study-content ul,
+  .case-study-content ol {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.75;
+    margin: 0 0 18px;
+    padding-left: 20px;
+  }
+
+  .case-study-content li {
+    margin-bottom: 6px;
+  }
+
+  .case-study-content blockquote {
+    border-left: 2px solid var(--lime);
+    padding: 10px 18px;
+    margin: 24px 0;
+    background: var(--card);
+    border-radius: 0 8px 8px 0;
+  }
+
+  .case-study-content blockquote p {
+    color: var(--soft);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .case-study-content pre {
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 16px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    overflow-x: auto;
+    white-space: pre;
+    margin: 24px 0;
+  }
+
+  .case-study-content code {
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: 0.88em;
+    padding: 2px 5px;
+    border-radius: 5px;
+    background: var(--card);
+    border: 1px solid var(--line);
+  }
+
+  .case-study-content pre code {
+    padding: 0;
+    border: none;
+    background: none;
+    font-size: 13px;
+  }
+
+  .case-study-content hr {
+    border: none;
+    height: 1px;
+    background: var(--line);
+    margin: 40px 0;
+  }
+
+  .case-study-content a {
+    color: var(--lime);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(198, 255, 74, 0.3);
+    transition: text-decoration-color 0.2s;
+  }
+
+  .case-study-content a:hover {
+    text-decoration-color: var(--lime);
+  }
+
+  /* Case study meta */
+  .case-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 16px;
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--card);
+    margin: 28px 0 40px;
+  }
+
+  .case-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .case-meta-label {
+    font: 600 11px/1 ui-monospace, monospace;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .case-meta-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* Impact highlight */
+  .impact-highlight {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 18px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(198, 255, 74, 0.15);
+    background: rgba(198, 255, 74, 0.03);
+    margin: 24px 0;
+  }
+
+  .light .impact-highlight {
+    border-color: rgba(74, 158, 0, 0.15);
+    background: rgba(74, 158, 0, 0.03);
+  }
+
+  .impact-highlight .impact-num {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--lime);
+    line-height: 1;
+  }
+
+  .impact-highlight .impact-desc {
+    font-size: 14px;
+    color: var(--soft);
+  }
+
+  /* Nav kicker for blog/case pages */
+  .v2-kicker {
+    color: var(--muted);
+    font: 600 11px/1.2 ui-monospace, monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    max-width: 600px;
+    margin: 0;
+    font-size: clamp(24px, 4vw, 36px);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+  }
 }

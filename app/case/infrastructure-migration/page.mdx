@@ -1,0 +1,135 @@
+export const metadata = {
+  title: 'Infrastructure Migration — Case Study',
+  description:
+    'End-to-end migration: Airflow → Prefect, plus a Rust-based Python toolchain (Poetry → uv, pandas → Polars, Loguru → Logly). Zero-downtime platform modernization.',
+  alternates: {
+    canonical: '/case/infrastructure-migration',
+  },
+}
+
+# Modernizing a Production ML Platform
+
+<div className="case-meta">
+  <div className="case-meta-item">
+    <span className="case-meta-label">Company</span>
+    <span className="case-meta-value">MDPI</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Role</span>
+    <span className="case-meta-value">Lead Engineer</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Scope</span>
+    <span className="case-meta-value">Full platform stack</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Period</span>
+    <span className="case-meta-value">2025</span>
+  </div>
+</div>
+
+## The Problem
+
+The production ML platform had accumulated years of tooling decisions that no longer served the team well:
+
+- **Apache Airflow** for orchestration — powerful but operationally heavy. DAG development was slow, the scheduler was fragile, and Python dependency isolation between tasks was a constant pain point.
+- **Poetry** for dependency management — lock resolution was increasingly slow (10+ minutes for complex projects), and the plugin ecosystem for our use cases was limited.
+- **Loguru** for logging — worked fine locally but produced unstructured text logs that were nearly impossible to query or correlate across services at scale.
+- **Pandas** for ETL — memory-intensive on our dataset sizes, no lazy evaluation, and the API encouraged mutation patterns that made debugging difficult.
+
+Each of these was a reasonable choice when originally made. But together, they created a platform that was slow to develop on, hard to debug, and expensive to maintain.
+
+## Constraints
+
+- **Zero downtime**: Production workflows processed data daily. We couldn't pause the pipeline for a "big bang" migration.
+- **Gradual rollout**: The team needed to learn new tools incrementally. Switching everything at once would create a knowledge cliff.
+- **Backward compatibility**: Existing workflow logic had to be preserved exactly. We were changing infrastructure, not business logic.
+
+## Decisions
+
+### Airflow → Self-Hosted Prefect
+
+Prefect's model — where flows are Python functions, not DAG configs — matched how our team actually thought about workflows. Key advantages:
+
+- **Native Python**: No DAG boilerplate. A workflow is a function decorated with `@flow`. Parameters are type-hinted Python arguments, not Airflow Variables.
+- **Dynamic workflows**: Prefect handles dynamic task mapping natively. Our ML pipelines often branch based on data properties — something that required hacky workarounds in Airflow.
+- **Self-hosted**: We deployed Prefect on our infrastructure, keeping data and orchestration within our network boundary.
+
+### Poetry → uv
+
+uv solved our dependency resolution problem immediately:
+
+- **10x faster resolution**: What took Poetry 10 minutes took uv under 60 seconds.
+- **Drop-in replacement**: uv is compatible with `pyproject.toml` and standard Python packaging. The migration was mechanical — swap the tool, verify the lock file, done.
+
+### Loguru → Logly + OpenTelemetry
+
+We replaced unstructured Loguru calls with Logly, a Rust-powered logging library for Python, emitting structured logs that feed into our OpenTelemetry pipeline:
+
+- Logs carry trace context (trace ID, span ID) automatically
+- Structured JSON output enables querying by any field
+- Logs, traces, and metrics are correlated in SigNoz
+
+### Pandas → Polars for ETL
+
+Polars gave us:
+
+- **Lazy evaluation**: Build a query plan, optimize it, then execute. No more intermediate DataFrames eating RAM.
+- **Consistent performance**: Polars is written in Rust with a predictable memory model. No more OOM surprises on large batches.
+- **Cleaner API**: Expression-based API discourages mutation, making data transformations easier to reason about and test.
+
+### The common thread: Rust under Python
+
+uv, Polars and Logly are all written in Rust. The team kept writing Python, but the engine underneath got faster and leaner, so we gained speed without rewriting business logic.
+
+## Architecture After Migration
+
+```
+┌─────────────────────────────────────────────┐
+│              Prefect (Self-Hosted)           │
+│  ┌─────────┐  ┌─────────┐  ┌─────────────┐ │
+│  │  Flow A  │  │  Flow B  │  │  Flow C     │ │
+│  │ (ingest) │  │ (train)  │  │ (transform) │ │
+│  └────┬─────┘  └────┬─────┘  └──────┬──────┘ │
+└───────┼──────────────┼───────────────┼────────┘
+        │              │               │
+        ▼              ▼               ▼
+  ┌──────────┐  ┌──────────┐   ┌───────────┐
+  │  Polars   │  │  PyTorch │   │  Polars   │
+  │  (ETL)    │  │ (models) │   │  (ETL)    │
+  └──────────┘  └──────────┘   └───────────┘
+        │              │               │
+        └──────────────┼───────────────┘
+                       ▼
+              ┌──────────────┐
+              │  PostgreSQL  │
+              │  + S3        │
+              └──────┬───────┘
+                     │
+              OpenTelemetry → ClickHouse → SigNoz
+```
+
+## Migration Strategy
+
+We migrated each component independently, running old and new in parallel:
+
+1. **Week 1–2**: uv migration (lowest risk, highest immediate payoff)
+2. **Week 3–4**: Polars migration for non-critical ETL workflows
+3. **Week 5–8**: Prefect migration — rewrote workflows one by one, validated output parity
+4. **Week 9–10**: Structured logging migration, tied to observability rollout
+5. **Week 11**: Decommissioned Airflow, Poetry, pandas, Loguru
+
+Each step had a rollback plan. Each step was validated before the next began.
+
+## Outcome
+
+- **Developer velocity**: New workflows are built in hours, not days. No more DAG debugging.
+- **CI speed**: uv cut dependency resolution from 10+ minutes to under 60 seconds across all projects.
+- **Data pipeline reliability**: Polars eliminated OOM failures on large ETL batches. Zero unplanned failures in the 3 months since migration.
+- **Full observability**: Every workflow is automatically traced end-to-end through the OpenTelemetry pipeline.
+
+## What I Learned
+
+- **Migrate the smallest thing first.** uv was the easiest swap and gave the team immediate wins, building trust for the harder Prefect migration.
+- **Run in parallel, validate output parity.** We ran old Airflow DAGs alongside new Prefect flows for every workflow, diffing outputs. This caught three subtle data bugs that would have been production incidents.
+- **Infrastructure migrations are trust exercises.** The team had to trust that the new stack was better. Showing measurable improvements (CI speed, memory usage, debugging time) at each stage kept momentum.

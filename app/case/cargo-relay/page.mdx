@@ -1,0 +1,67 @@
+export const metadata = {
+  title: 'CarGo Relay — Case Study',
+  description:
+    'A C2C parcel-delivery startup that matched parcels to the routes people already travel, reaching ~5,000 registered users and ~CHF 50,000 in revenue in 2024.',
+  alternates: {
+    canonical: '/case/cargo-relay',
+  },
+}
+
+# CarGo Relay: Parcels on Everyday Routes
+
+<div className="case-meta">
+  <div className="case-meta-item">
+    <span className="case-meta-label">Company</span>
+    <span className="case-meta-value">CarGo Relay (EPFL startup)</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Role</span>
+    <span className="case-meta-value">Co-Founder (1 of 3)</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Traction</span>
+    <span className="case-meta-value">~5,000 registered users</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Period</span>
+    <span className="case-meta-value">2024</span>
+  </div>
+</div>
+
+<div className="impact-highlight">
+  <span className="impact-num">~5,000</span>
+  <span className="impact-desc">registered users across universities and schools in Lausanne</span>
+</div>
+
+## The idea
+
+Every weekday, thousands of people travel the same routes through Lausanne. CarGo Relay is a **C2C parcel-delivery app** that uses this everyday human flow: parcels travel with people who are already going that way, mostly on the busiest routes from Monday to Friday.
+
+I was one of three co-founders, backed by **EPFL Startup Support**.
+
+## Route matching
+
+Travellers share their current location, their usual destination and how they travel. Each mode gets parcels that fit it:
+
+- **Metro riders:** parcels close to their route, near where they start and end
+- **Bikes:** more flexible, with wider detours
+- **Cars:** the most flexible, and the only option for large parcels
+
+The matching runs on the **Google Maps API**.
+
+## What I built
+
+I led the system design and built the product end to end:
+
+- **React Native** app for senders and travellers
+- **FastAPI** backend
+- **MariaDB** for the data model
+
+## Result
+
+By the end of 2024, CarGo Relay had **~5,000 registered users** across universities and schools in Lausanne, and **~CHF 50,000 in revenue** from a 10% commission on deliveries.
+
+## What I learned
+
+- **Build on behavior that already exists.** People were already traveling these routes; the product only had to match parcels to them.
+- **Design for each mode.** A metro rider and a driver can't take the same parcel, so the matching had to respect how people move.

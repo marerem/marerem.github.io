@@ -1,0 +1,74 @@
+export const metadata = {
+  title: 'Motor Anomaly Detection — Case Study',
+  description:
+    'Detecting rare defects in precision motors from noisy electrical signals at Maxon Group: a benchmark of classical and deep models, optimized for recall, shipped to the production line at 92% recall.',
+  alternates: {
+    canonical: '/case/anomaly-detection',
+  },
+}
+
+# Motor Anomaly Detection
+
+<div className="case-meta">
+  <div className="case-meta-item">
+    <span className="case-meta-label">Company</span>
+    <span className="case-meta-value">Maxon Group</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Role</span>
+    <span className="case-meta-value">Software & ML Engineer</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Team</span>
+    <span className="case-meta-value">2 AI experts from CSEM + 3 engineers</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Period</span>
+    <span className="case-meta-value">Jun 2023 – Mar 2024</span>
+  </div>
+</div>
+
+<div className="impact-highlight">
+  <span className="impact-num">92%</span>
+  <span className="impact-desc">recall on defective motors, running on the factory production line</span>
+</div>
+
+## The problem
+
+Maxon builds precision motors. The goal was to detect defective motors from their **current, voltage and temperature signals**. Two things made it hard:
+
+- **Defects were rare.** Almost every motor was good, so the data was heavily imbalanced.
+- **Factory noise masked them.** The signals came from a real production environment, where noise hides the small differences a defect causes.
+
+## Choosing the metric
+
+A defective motor that ships costs far more than a good motor flagged for a second check. So I **optimized for recall**: catching defects mattered more than avoiding false alarms.
+
+## The benchmark
+
+I compared two families of approaches on the same data:
+
+- **Classical pipeline:** feature extraction from each signal channel, dimensionality reduction, then gradient boosting
+- **Deep models:** an autoencoder and a Siamese network
+
+**The autoencoder won.** It learns what a *normal* motor looks like and flags anything that doesn't fit, so it doesn't need many examples of defects. That made it a natural fit for imbalanced data.
+
+## Shipping it
+
+I took the autoencoder to production as an **inspection application integrated into the factory production line**:
+
+- **FastAPI** service with **PostgreSQL**, packaged with **Docker**
+- **JWT authentication** for secure access inside the factory
+- **90%+ test coverage** (pytest and unittest), running in CI
+
+I started on the ML side and then built the production software around the model, which is why my title covered both.
+
+## Working with CSEM
+
+I partnered with 2 AI experts from **CSEM** (the Swiss Center for Electronics and Microtechnology) and 3 engineers. My role was the link between the research side and the production software.
+
+## What I learned
+
+- **Pick the metric from the business cost.** Recall was the right target because a missed defect is the expensive mistake.
+- **Benchmark before you commit.** Comparing classical and deep models on the same data gave us evidence for the final choice, not a guess.
+- **With rare defects, model normal instead.** Learning what "good" looks like sidesteps the shortage of defect examples.

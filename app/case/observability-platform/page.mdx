@@ -1,0 +1,117 @@
+export const metadata = {
+  title: 'Observability Platform — Case Study',
+  description:
+    'How we replaced Grafana-Prometheus with OpenTelemetry + ClickHouse + SigNoz for ML workloads, reducing incident response time by 30%.',
+  alternates: {
+    canonical: '/case/observability-platform',
+  },
+}
+
+# Next-Gen Observability for ML Workloads
+
+<div className="case-meta">
+  <div className="case-meta-item">
+    <span className="case-meta-label">Company</span>
+    <span className="case-meta-value">MDPI</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Role</span>
+    <span className="case-meta-value">Lead Engineer & Architect</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Team</span>
+    <span className="case-meta-value">Cross-functional (CH & CN)</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Period</span>
+    <span className="case-meta-value">2025</span>
+  </div>
+</div>
+
+<div className="impact-highlight">
+  <span className="impact-num">30%</span>
+  <span className="impact-desc">faster incident response time after migration to unified observability</span>
+</div>
+
+## The Problem
+
+Our ML services — data pipelines, model inference APIs, ETL workflows — were monitored through a traditional **Grafana + Prometheus** stack. This worked for basic infrastructure metrics, but broke down as ML workloads grew more complex:
+
+- **Siloed signals**: Metrics, logs, and traces lived in separate systems. When an inference latency spike occurred, the team had to manually correlate across three dashboards to find the root cause.
+- **High-cardinality blind spots**: ML pipelines generate metrics with high cardinality (per-model, per-dataset, per-feature). Prometheus struggled with label explosion, causing query timeouts and dropped metrics.
+- **No trace context across pipelines**: A request flowing from API → orchestrator → model → storage had no unified trace ID. Debugging cross-service issues meant reading timestamps and guessing.
+- **Alert fatigue**: Without correlated signals, alerts fired on symptoms rather than causes. The team was drowning in noise.
+
+## Constraints
+
+- **Zero-downtime migration**: Production services could not go offline during the transition. The old and new systems had to run in parallel.
+- **Distributed team**: Engineering was split across Basel and Shanghai, requiring clear architecture documentation and async coordination.
+- **Budget**: The solution needed to be self-hosted — no SaaS observability vendors.
+- **Adoption**: Engineers needed to instrument their code with minimal friction, or they simply wouldn't do it.
+
+## My Decision
+
+I chose **OpenTelemetry** as the instrumentation layer, **ClickHouse** for storage, and **SigNoz** as the query and visualization frontend. Here's why:
+
+- **OpenTelemetry**: Vendor-neutral, widely adopted, auto-instrumentation for Python (our primary language). One SDK for traces, metrics, and logs means one integration pattern for all services.
+- **ClickHouse**: Columnar storage designed for high-cardinality analytical queries. It handles the per-model, per-feature metric dimensions that killed Prometheus.
+- **SigNoz**: Open-source, built natively on OpenTelemetry + ClickHouse. Unified UI for traces, metrics, and logs in a single pane. No need to stitch together Grafana + Jaeger + Loki.
+
+I explicitly rejected:
+- **Datadog/New Relic** — SaaS cost was prohibitive at our data volume
+- **Grafana Tempo + Loki** — Would have kept us in the Grafana ecosystem but still siloed signals
+- **Elastic/ELK** — Heavy operational overhead, not optimized for trace data
+
+## Architecture
+
+```
+┌──────────────────┐    ┌──────────────────────┐
+│   ML Pipelines   │    │   FastAPI Services    │
+│   (Prefect)      │    │   (Inference APIs)    │
+└────────┬─────────┘    └──────────┬───────────┘
+         │  OTel SDK               │  OTel SDK
+         │  (auto-instrument)      │  (auto-instrument)
+         └──────────┬──────────────┘
+                    ▼
+         ┌──────────────────┐
+         │  OTel Collector  │
+         │  (gateway mode)  │
+         └────────┬─────────┘
+                  │
+        ┌─────────┼──────────┐
+        ▼         ▼          ▼
+   ┌─────────┐ ┌──────┐ ┌──────┐
+   │ Traces  │ │ Logs │ │Metrics│
+   └────┬────┘ └──┬───┘ └──┬───┘
+        └─────────┼────────┘
+                  ▼
+         ┌──────────────┐
+         │  ClickHouse  │
+         │  (columnar)  │
+         └──────┬───────┘
+                ▼
+         ┌──────────────┐
+         │    SigNoz    │
+         │  (dashboards │
+         │   + alerts)  │
+         └──────────────┘
+```
+
+**Key architectural decisions:**
+
+- **Gateway collector pattern**: All services send telemetry to a central OTel Collector rather than directly to ClickHouse. This decouples instrumentation from storage, allows sampling/filtering at the collector level, and makes backend swaps transparent.
+- **Auto-instrumentation first**: We enabled OTel auto-instrumentation for Python (FastAPI, requests, SQLAlchemy, Redis) before adding any custom spans. This gave us 80% of the signal with near-zero code changes.
+- **Parallel running**: Both Prometheus and OTel ran simultaneously for 4 weeks. We validated data parity before cutting over.
+
+## Outcome
+
+- **30% faster incident response**: Correlated traces + logs + metrics in one view meant engineers found root causes in minutes, not hours.
+- **Eliminated alert fatigue**: Alerts now fire on traced error chains rather than isolated metric thresholds.
+- **Scaled to full pipeline coverage**: High-cardinality ML metrics that previously timed out now query in under 2 seconds in ClickHouse.
+- **Team adoption**: Auto-instrumentation meant engineers got observability "for free" — no manual instrumentation required for most services.
+
+## What I Learned
+
+- **Migration is a people problem, not a tech problem.** The hardest part wasn't ClickHouse tuning — it was convincing engineers in two time zones to trust a new system. Running in parallel and showing side-by-side dashboards was essential.
+- **Auto-instrumentation is the adoption hack.** If you require developers to add manual spans, coverage will be patchy. Auto-instrumentation gets you baseline observability immediately.
+- **Columnar storage changes what questions you can ask.** With Prometheus, we designed alerts around what was queryable. With ClickHouse, we design alerts around what actually matters.

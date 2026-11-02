@@ -1,0 +1,57 @@
+export const metadata = {
+  title: 'Self-Hosted Jev Decision Readout — Case Study',
+  description:
+    'Noul, Score and Choice readouts from a single forward pass, served with vLLM and PagedAttention on Kubernetes.',
+  alternates: {
+    canonical: '/case/llm-serving',
+  },
+}
+
+# Self-Hosted Jev Decision Readout
+
+<div className="case-meta">
+  <div className="case-meta-item">
+    <span className="case-meta-label">Type</span>
+    <span className="case-meta-value">Independent project</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Role</span>
+    <span className="case-meta-value">Independent AI Engineer</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Stack</span>
+    <span className="case-meta-value">vLLM · Kubernetes · Docker</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Period</span>
+    <span className="case-meta-value">2026</span>
+  </div>
+</div>
+
+## The idea
+
+Often you don't need an LLM to *write* an answer. You need it to *decide*: yes or no, a score, or one option from a list. A Jev-style readout gets that decision from **one forward pass**, without generating any text.
+
+## How the readout works
+
+1. The prompt holds the state (any free-form context), the instructions, and the allowed answers.
+2. The model runs **one forward pass**.
+3. From the final logits, I keep only the tokens of the **allowed answers**, for example ` yes` and ` no`.
+4. A **softmax over just those tokens** gives the probabilities.
+
+With two candidates, this is simply a sigmoid of the logit difference, so the output is a calibrated probability rather than a sampled word. It's not top-k sampling: the answer can only ever be one of the allowed options.
+
+## Three readouts
+
+- **Noul:** a yes/no decision, as a probability
+- **Score:** a value on a scale
+- **Choice:** one option from a fixed list
+
+## Serving it
+
+I self-host the model with **vLLM**, whose **PagedAttention** manages the KV cache efficiently, and run it on **Kubernetes** in Docker containers.
+
+## What I learned
+
+- **Constrain the output, don't parse it.** Reading the logits of allowed tokens is more reliable than asking the model to answer and parsing free text.
+- **One forward pass is cheap.** Skipping generation makes each decision fast, which matters when you need many of them.

@@ -1,0 +1,70 @@
+export const metadata = {
+  title: 'Cancer Organoid Tracker — Case Study',
+  description:
+    'Detecting, tracking and staging cancer organoids to decide when they are ready for drug testing, with a human-in-the-loop pipeline that automated 89% of annotation.',
+  alternates: {
+    canonical: '/case/cancer-organoid-tracker',
+  },
+}
+
+# Cancer Organoid Detection & Tracking
+
+<div className="case-meta">
+  <div className="case-meta-item">
+    <span className="case-meta-label">Institution</span>
+    <span className="case-meta-value">AGORA Cancer Research, with CHUV</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Role</span>
+    <span className="case-meta-value">Machine Learning Engineer</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Data</span>
+    <span className="case-meta-value">150 TB imaging pipeline</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Period</span>
+    <span className="case-meta-value">Dec 2022 – May 2023</span>
+  </div>
+</div>
+
+<div className="impact-highlight">
+  <span className="impact-num">89%</span>
+  <span className="impact-desc">of predictions automated, where annotation used to be fully manual</span>
+</div>
+
+## The problem
+
+Cancer organoids are small, lab-grown versions of tumors used to test drugs. Researchers need to know **when each organoid is ready for drug testing**, and that meant checking every frame by hand.
+
+## My approach
+
+### Detect and track
+
+A **YOLOv5** model detects organoids in each frame, and **DeepSORT** follows each one over time as it grows.
+
+### Classify readiness
+
+Each organoid is classified into one of **5 readiness stages**, plus a **class 0** for debris and non-viable organoids (nothing grew, or the cells had died). Class 0 was the most common class by far, so I handled the imbalance in two ways:
+
+- **Oversampling** the rare readiness stages, so the model sees enough of them
+- **Weighting the loss by class frequency**, so mistakes on rare stages cost more
+
+### Keep humans in the loop
+
+Instead of checking every frame, researchers now only review what the model is unsure about:
+
+- Predictions with **high confidence pass automatically**
+- **Uncertain predictions wait for human approval**
+
+This automated **89% of predictions**, where annotation used to be 100% manual.
+
+### The data pipeline
+
+I also architected and maintained the lab's **150 TB imaging data pipeline**, working with clinical researchers at **CHUV** (Lausanne University Hospital).
+
+## What I learned
+
+- **Tie the model to a decision.** "Is this organoid ready for drug testing?" is a question researchers actually ask, so the model's output fits straight into their work.
+- **Messy data deserves its own class.** Debris and dead cells are real; giving them a class made the readiness stages cleaner.
+- **Automate the confident cases, not all of them.** A human-in-the-loop pipeline saves most of the time while keeping experts in charge of the hard calls.

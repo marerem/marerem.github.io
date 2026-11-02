@@ -1,0 +1,108 @@
+export const metadata = {
+  title: 'API Server Layer — Case Study',
+  description:
+    'Designing and building a unified backend for all internal and external services from scratch with FastAPI, PostgreSQL, and S3.',
+  alternates: {
+    canonical: '/case/api-server',
+  },
+}
+
+# Unified API Server Layer
+
+<div className="case-meta">
+  <div className="case-meta-item">
+    <span className="case-meta-label">Company</span>
+    <span className="case-meta-value">MDPI</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Role</span>
+    <span className="case-meta-value">Architect & Lead Developer</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Stack</span>
+    <span className="case-meta-value">FastAPI · PostgreSQL · S3</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Period</span>
+    <span className="case-meta-value">2025</span>
+  </div>
+</div>
+
+## The Problem
+
+Before I joined, internal services communicated through a mix of direct database queries, shared file paths, and ad-hoc scripts. There was no API layer — each team had built their own integration patterns:
+
+- **ML pipelines** read from and wrote to shared directories on an NFS mount
+- **Frontend applications** queried the database directly with raw SQL
+- **External partners** received data through manual CSV exports
+
+This created tight coupling, no access control, no versioning, and no way to understand who was using what data or how often.
+
+## Constraints
+
+- **Incremental adoption**: The API had to coexist with existing direct-access patterns during transition. Forcing all teams to migrate simultaneously was not realistic.
+- **Performance**: ML model inference endpoints needed sub-200ms response times. Data retrieval endpoints served datasets up to several GB.
+- **Multi-tenancy**: Internal teams and external partners needed different access levels and rate limits.
+
+## My Decision
+
+I designed and built the API server from scratch using **FastAPI**, backed by **PostgreSQL** for structured data and **S3** for object storage (datasets, model artifacts, large files).
+
+**Why FastAPI:**
+- Async by default — critical for I/O-bound operations (S3 uploads, database queries)
+- Automatic OpenAPI documentation — teams could explore endpoints without reading code
+- Pydantic validation — request/response contracts enforced at the boundary, not buried in business logic
+- Native OpenTelemetry integration — every request is automatically traced
+
+**Why build from scratch rather than adopt an existing framework/gateway:**
+- The data model was domain-specific. Off-the-shelf API gateways would have required as much configuration as building custom endpoints.
+- We needed tight integration with our ML pipeline outputs — model versions, dataset lineage, experiment metadata. This isn't a CRUD app.
+
+## Architecture
+
+```
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│   Frontend   │  │  ML Pipelines │  │   Partners   │
+└──────┬───────┘  └──────┬───────┘  └──────┬───────┘
+       │                 │                 │
+       │    API Key      │   Service Token │   API Key
+       └─────────────────┼─────────────────┘
+                         ▼
+              ┌──────────────────┐
+              │    FastAPI       │
+              │  ┌────────────┐  │
+              │  │ Auth Layer │  │
+              │  ├────────────┤  │
+              │  │  Routing   │  │
+              │  ├────────────┤  │
+              │  │ Validation │  │
+              │  ├────────────┤  │
+              │  │ Rate Limit │  │
+              │  └────────────┘  │
+              └────┬────────┬───┘
+                   │        │
+            ┌──────▼──┐  ┌──▼──────┐
+            │PostgreSQL│  │   S3    │
+            │(metadata)│  │(objects)│
+            └─────────┘  └─────────┘
+```
+
+**Key design patterns:**
+
+- **Boundary validation**: All input validated via Pydantic models at the API boundary. Internal code trusts the data it receives.
+- **Repository pattern**: Database access abstracted behind repository interfaces. The API layer doesn't know or care about SQL.
+- **Presigned URL pattern for large files**: Instead of proxying multi-GB files through the API, we generate presigned S3 URLs. The client uploads/downloads directly to S3, and the API only handles metadata.
+- **Versioned endpoints**: `/v1/` prefix from day one. Breaking changes go in `/v2/` without disrupting existing integrations.
+
+## Outcome
+
+- **Single integration point**: All services — frontend, ML pipelines, and external partners — now go through one API with consistent authentication, logging, and rate limiting.
+- **Automatic documentation**: The OpenAPI spec became the source of truth. Teams stopped asking "how do I get this data?" and started reading the docs.
+- **Full traceability**: Every API call is traced through OpenTelemetry. We can see exactly which service requested what data, when, and how long it took.
+- **Clean separation**: ML pipelines write results to S3 and register metadata through the API. Consumers access data through the API. No more shared directories.
+
+## What I Learned
+
+- **An API is an organizational tool, not just a technical one.** The biggest impact wasn't performance or security — it was that teams finally had a shared vocabulary for data access. "Call the dataset endpoint" replaced "copy the file from this NFS path."
+- **Start with the contract, not the implementation.** Writing the OpenAPI spec first and getting feedback from consuming teams before writing code saved weeks of rework.
+- **Presigned URLs are underused.** Most API engineers reflexively proxy file uploads. Presigned URLs eliminate the API as a bottleneck for large data and reduce infrastructure cost.

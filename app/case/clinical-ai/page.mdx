@@ -1,0 +1,82 @@
+export const metadata = {
+  title: 'From Research to Hospitals — Case Study',
+  description:
+    'A landmark-based co-registration algorithm 40× faster on CPU, then a full-stack platform that took 4 research prototypes to hospitals across the Boston area.',
+  alternates: {
+    canonical: '/case/clinical-ai',
+  },
+}
+
+# From Research to Hospitals
+
+<div className="case-meta">
+  <div className="case-meta-item">
+    <span className="case-meta-label">Institution</span>
+    <span className="case-meta-value">MIT & Harvard Medical School, Edelman Lab</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Roles</span>
+    <span className="case-meta-value">Research Engineer → Software Engineer</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Impact</span>
+    <span className="case-meta-value">40× faster co-registration</span>
+  </div>
+  <div className="case-meta-item">
+    <span className="case-meta-label">Period</span>
+    <span className="case-meta-value">Mar 2024 – May 2025</span>
+  </div>
+</div>
+
+<div className="impact-highlight">
+  <span className="impact-num">40×</span>
+  <span className="impact-desc">faster co-registration, on CPU, running on the imaging machine itself</span>
+</div>
+
+This project had two halves. First I invented an algorithm, then I built the platform that put the lab's research in the hands of clinicians.
+
+## Part 1: The algorithm
+
+### The problem
+
+Co-registration aligns the frames of coronary imaging video, so clinicians can compare what they see across images of the same artery. The lab's existing approach trained a model to predict the transformation parameters and the location of each frame. It had three problems:
+
+- **It overfit.** Clinical data is scarce, and even with augmentation the model memorized the training set.
+- **It needed a GPU.** The algorithm has to run on the medical device that records the data, and that device doesn't have one.
+- **It was slow.** Co-registration took far too long to fit into the clinical workflow.
+
+### My decision
+
+I replaced the learned model with a **landmark-based algorithm**. It defines landmarks in each frame, then aligns the frames by **spline interpolation between the landmarks**.
+
+- **No training, so no overfitting.** The method doesn't depend on how much clinical data exists.
+- **CPU only.** It runs on the imaging machine itself, inside the clinical workflow.
+- **Cross-platform.** I made it run on macOS, Windows and Linux, because medical hardware runs all three.
+
+I also built a frame-cleaning pipeline: **CLIPSeg** and **SAM** segment the medical equipment in each frame, and **Stable Diffusion inpainting** removes it.
+
+### Result
+
+Co-registration became **40× faster**, on CPU, on the device that records the data.
+
+## Part 2: The platform
+
+### The problem
+
+The lab had several research prototypes, each useful on its own, but researchers and clinicians had no single place to use them.
+
+### What I built
+
+- **One full-stack platform** (React, Node.js) that took **4 research prototypes to production**
+- **The PyTorch models served through containerized APIs** (Docker, Linux)
+- **An interface designed from clinicians' user stories**, so it follows how they actually work
+
+### Result
+
+The platform is used by researchers and clinicians at **hospitals across the Boston area**. I also onboarded and mentored 2 new engineers on the team.
+
+## What I learned
+
+- **A model isn't always the answer.** With scarce data and no GPU, a classical method beat deep learning on every constraint that mattered.
+- **The deployment target shapes the design.** Knowing the algorithm had to run on the imaging device decided the approach before any code was written.
+- **Research only matters once people can use it.** The platform is what turned the lab's work into something clinicians use every day.

@@ -28,7 +28,7 @@ export function OrbBackground() {
           hoverIntensity={2}
           rotateOnHover
           forceHoverState={false}
-          backgroundColor={isDark ? '#09090b' : '#ffffff'}
+          backgroundColor={isDark ? '#09090b' : '#faf9f6'}
         />
       </div>
     </div>
